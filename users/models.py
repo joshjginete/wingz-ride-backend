@@ -4,10 +4,14 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     ROLE_ADMIN = "admin"
+    ROLE_DRIVER = "driver"
+    ROLE_RIDER = "rider"
     ROLE_STAFF = "staff"
 
     ROLE_CHOICES = (
         (ROLE_ADMIN, "Admin"),
+        (ROLE_DRIVER, "Driver"),
+        (ROLE_RIDER, "Rider"),
         (ROLE_STAFF, "Staff"),
     )
 
