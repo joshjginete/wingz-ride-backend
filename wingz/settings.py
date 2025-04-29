@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'rest_framework.authtoken',
+    'djoser',
 
     'rides',
     'users',
@@ -141,9 +143,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
 }
 
 AUTH_USER_MODEL = 'users.User'
+
+
+DJOSER = {
+    'SERIALIZERS': {
+        'current_user': 'users.serializers.CustomUserSerializer',    # used by /auth/users/me/
+        'user': 'users.serializers.CustomUserSerializer',            # used by /auth/users/<id>/
+        'user_create': 'users.serializers.CustomUserCreateSerializer',
+    }
+}
