@@ -1,0 +1,17 @@
+# Core
+asgiref==3.8.1
+Django==5.2
+django-environ==0.12.0
+Markdown==3.8
+setuptools==75.8.0
+sqlparse==0.5.3
+typing_extensions==4.13.2
+wheel==0.45.1
+
+# Database
+dj-database-url==2.3.0
+psycopg2-binary==2.9.10
+
+# DRF
+django-filter==25.1
+djangorestframework==3.16.0
