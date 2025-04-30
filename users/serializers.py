@@ -23,10 +23,7 @@ class CustomUserSerializer(BaseUserSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        return {
-            'message': 'Authenticated user data fetched successfully!',
-            'user': data
-        }
+        return {'user': data}
 
 
 class CustomUserCreateSerializer(BaseUserCreateSerializer):

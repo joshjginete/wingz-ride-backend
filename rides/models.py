@@ -34,7 +34,7 @@ class Rides(models.Model):
     dropoff_longitude = models.FloatField(**optional)
     pickup_latitude = models.FloatField(**optional)
     pickup_longitude = models.FloatField(**optional)
-    pickup_time = models.DateTimeField(**optional)
+    pickup_time = models.DateTimeField(auto_now_add=True, **optional)
     status = models.CharField(
         max_length=16,
         choices=RIDE_STATUSES,

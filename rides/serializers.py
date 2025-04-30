@@ -24,8 +24,8 @@ class RideSerializer(serializers.ModelSerializer):
     driver = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
     rider_details = CustomUserSerializer(source='rider', read_only=True)
     driver_details = CustomUserSerializer(source='driver', read_only=True)
-    ride_event_ride = RideEventSerializer(many=True, read_only=True)
-    pickup_distance = serializers.SerializerMethodField()
+    travel_distance = serializers.SerializerMethodField()
+    todays_ride_events = serializers.SerializerMethodField()
 
     class Meta:
         model = Rides
@@ -41,9 +41,10 @@ class RideSerializer(serializers.ModelSerializer):
             'dropoff_longitude',
             'pickup_time',
             'status',
+            'travel_distance',
+            'todays_ride_events',
             'created_at',
             'updated_at',
-            'ride_event_ride',
         )
 
     def create(self, validated_data):
@@ -72,5 +73,13 @@ class RideSerializer(serializers.ModelSerializer):
         dropoff = f"({ride.dropoff_latitude}, {ride.dropoff_longitude})"
         return f"Ride {action} from {pickup} to {dropoff}"
 
-    def get_pickup_distance(self, obj):
-        return round(obj.pickup_distance.m if hasattr(obj, 'pickup_distance') else None, 2)  # meters
+    def get_todays_ride_events(self, obj):
+        recent_24h = self.context.get('recent_ride_events', {}).get(obj.id, [])
+        return RideEventSerializer(recent_24h, many=True).data
+
+    def get_travel_distance(self, obj):
+        if obj.pickup_latitude and obj.pickup_longitude and obj.dropoff_latitude and obj.dropoff_longitude:
+            pickup_point = Point(obj.pickup_longitude, obj.pickup_latitude, srid=4326)
+            dropoff_point = Point(obj.dropoff_longitude, obj.dropoff_latitude, srid=4326)
+            return f"{round(pickup_point.distance(dropoff_point) * 100000, 2)} meters"
+        return None
