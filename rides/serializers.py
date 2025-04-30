@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.gis.geos import Point
 
 from rest_framework import serializers
 
@@ -24,6 +25,7 @@ class RideSerializer(serializers.ModelSerializer):
     rider_details = CustomUserSerializer(source='rider', read_only=True)
     driver_details = CustomUserSerializer(source='driver', read_only=True)
     ride_event_ride = RideEventSerializer(many=True, read_only=True)
+    pickup_distance = serializers.SerializerMethodField()
 
     class Meta:
         model = Rides
@@ -46,6 +48,11 @@ class RideSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         ride = super().create(validated_data)
+
+        # Note: (longitude, latitude)
+        ride.pickup_location = Point(ride.pickup_longitude, ride.pickup_latitude)
+        ride.save()
+
         RideEvents.objects.create(
             ride=ride,
             description=self._build_description(ride, action="created")
@@ -64,3 +71,6 @@ class RideSerializer(serializers.ModelSerializer):
         pickup = f"({ride.pickup_latitude}, {ride.pickup_longitude})"
         dropoff = f"({ride.dropoff_latitude}, {ride.dropoff_longitude})"
         return f"Ride {action} from {pickup} to {dropoff}"
+
+    def get_pickup_distance(self, obj):
+        return round(obj.pickup_distance.m if hasattr(obj, 'pickup_distance') else None, 2)  # meters

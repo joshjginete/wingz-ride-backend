@@ -87,14 +87,17 @@ WSGI_APPLICATION = 'wingz.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-DATABASE_URL = env("DATABASE_URL", default="sqlite:///db.sqlite3")
 
 # Postgres
 DATABASES = {
-    "default": dj_database_url.config(
-        default=env.db(),
-        conn_max_age=env.int('POSTGRES_CONN_MAX_AGE', default=600),
-    )
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': env("DATABASE_NAME"),
+        'USER': env("DATABASE_USER"),
+        'PASSWORD': env("DATABASE_PASSWORD"),
+        'HOST': env("DATABASE_HOST"),
+        'PORT': env("DATABASE_PORT"),
+    }
 }
 
 
