@@ -1,6 +1,6 @@
 from django.db import models
 
-from user.models import User
+from users.models import User
 
 optional = {
     'null': True,
@@ -66,5 +66,3 @@ class RideEvents(models.Model):
 
     def __str__(self):
         return str(self.id)
-
-
