@@ -1,0 +1,306 @@
+{
+	"info": {
+		"_postman_id": "3e7e70e7-f773-4b68-93ba-41e70945576f",
+		"name": "Wingz Ride",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22102569"
+	},
+	"item": [
+		{
+			"name": "User Authentication",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/api/v1/auth/token/login/",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"token",
+						"login",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Registration",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "email_address",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "phone_number",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "user_role",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "confirm_password",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/api/v1/auth/users/",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Rides List",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{TOKEN}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "email_address",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "phone_number",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "user_role",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "confirm_password",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/api/v1/rides/?ordering=pickup_time&latitude&longitude",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"rides",
+						""
+					],
+					"query": [
+						{
+							"key": "ordering",
+							"value": "pickup_time"
+						},
+						{
+							"key": "latitude",
+							"value": null
+						},
+						{
+							"key": "longitude",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ride Creation",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{TOKEN}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "rider",
+							"value": "4",
+							"type": "text"
+						},
+						{
+							"key": "driver",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "pickup_latitude",
+							"value": "7.098525843649544",
+							"type": "text"
+						},
+						{
+							"key": "pickup_longitude",
+							"value": "125.62080311976032",
+							"type": "text"
+						},
+						{
+							"key": "dropoff_latitude",
+							"value": "7.099224152804509",
+							"type": "text"
+						},
+						{
+							"key": "dropoff_longitude",
+							"value": "125.63013170158197",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/api/v1/rides/",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"rides",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ride Creation Pickup",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{TOKEN}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/api/v1/rides/6/pickup/",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"rides",
+						"6",
+						"pickup",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ride Creation Dropoff",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{TOKEN}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/api/v1/rides/6/dropoff/",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"rides",
+						"6",
+						"dropoff",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
