@@ -3,8 +3,10 @@ from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.db.models import Prefetch
 from django.utils.timezone import now, timedelta
-from rest_framework import viewsets
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter 
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rides.models import RideEvents, Rides
@@ -66,3 +68,35 @@ class RideViewSet(viewsets.ModelViewSet):
         }
         context['recent_ride_events'] = recent_events_map
         return context
+
+    @action(detail=True, methods=['post'], url_path='pickup')
+    def pickup(self, request, pk=None):
+        ride = self.get_object()
+
+        # Create pickup event
+        RideEvents.objects.create(
+            ride=ride,
+            description='Status changed to pickup'
+        )
+
+        # Optional: update status
+        ride.status = 'pickup'
+        ride.save()
+
+        return Response({'detail': 'Pickup recorded.'}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'], url_path='dropoff')
+    def dropoff(self, request, pk=None):
+        ride = self.get_object()
+
+        # Create dropoff event
+        RideEvents.objects.create(
+            ride=ride,
+            description='Status changed to dropoff'
+        )
+
+        # Optional: update status
+        ride.status = 'dropoff'
+        ride.save()
+
+        return Response({'detail': 'Dropoff recorded.'}, status=status.HTTP_200_OK)

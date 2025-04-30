@@ -12,11 +12,13 @@ optional = {
 class Rides(models.Model):
     RIDE_STATUS_DROPOFF = "dropoff"
     RIDE_STATUS_EN_ROUTE = "enroute"
+    RIDE_STATUS_PENDING = "pending"
     RIDE_STATUS_PICKUP = "pickup"
 
     RIDE_STATUSES = (
         (RIDE_STATUS_DROPOFF, "Dropoff"),
         (RIDE_STATUS_EN_ROUTE, "En Route"),
+        (RIDE_STATUS_PENDING, "Pending"),
         (RIDE_STATUS_PICKUP, "Pickup"),
     )
 
@@ -38,7 +40,7 @@ class Rides(models.Model):
     status = models.CharField(
         max_length=16,
         choices=RIDE_STATUSES,
-        default=RIDE_STATUS_PICKUP
+        default=RIDE_STATUS_PENDING
     )
     pickup_location = gis_models.PointField(**optional)
     dropoff_location = gis_models.PointField(**optional)

@@ -26,6 +26,7 @@ class RideSerializer(serializers.ModelSerializer):
     driver_details = CustomUserSerializer(source='driver', read_only=True)
     travel_distance = serializers.SerializerMethodField()
     todays_ride_events = serializers.SerializerMethodField()
+    trip_duration = serializers.SerializerMethodField()
 
     class Meta:
         model = Rides
@@ -43,35 +44,29 @@ class RideSerializer(serializers.ModelSerializer):
             'status',
             'travel_distance',
             'todays_ride_events',
+            'trip_duration',
             'created_at',
             'updated_at',
         )
 
     def create(self, validated_data):
         ride = super().create(validated_data)
-
-        # Note: (longitude, latitude)
         ride.pickup_location = Point(ride.pickup_longitude, ride.pickup_latitude)
         ride.save()
 
-        RideEvents.objects.create(
-            ride=ride,
-            description=self._build_description(ride, action="created")
-        )
         return ride
 
     def update(self, instance, validated_data):
         ride = super().update(instance, validated_data)
-        RideEvents.objects.create(
-            ride=ride,
-            description=self._build_description(ride, action="updated")
-        )
+        ride.dropoff_location = Point(ride.dropoff_latitude, ride.dropoff_longitude)
+        ride.save()
+
         return ride
 
-    def _build_description(self, ride, action):
-        pickup = f"({ride.pickup_latitude}, {ride.pickup_longitude})"
-        dropoff = f"({ride.dropoff_latitude}, {ride.dropoff_longitude})"
-        return f"Ride {action} from {pickup} to {dropoff}"
+    def _build_description(self, ride):
+        pickup_coordinates = f"({ride.pickup_latitude}, {ride.pickup_longitude})"
+        dropoff_coordinates = f"({ride.dropoff_latitude}, {ride.dropoff_longitude})"
+        return f"Status changed to pickup from {pickup_coordinates} to {dropoff_coordinates}"
 
     def get_todays_ride_events(self, obj):
         recent_24h = self.context.get('recent_ride_events', {}).get(obj.id, [])
@@ -82,4 +77,19 @@ class RideSerializer(serializers.ModelSerializer):
             pickup_point = Point(obj.pickup_longitude, obj.pickup_latitude, srid=4326)
             dropoff_point = Point(obj.dropoff_longitude, obj.dropoff_latitude, srid=4326)
             return f"{round(pickup_point.distance(dropoff_point) * 100000, 2)} meters"
+        return None
+
+    def get_trip_duration(self, obj):
+        events = self.context.get('recent_ride_events', {}).get(obj.id, [])
+        pickup_time = dropoff_time = None
+
+        for event in events:
+            if event.description == 'Status changed to pickup':
+                pickup_time = event.created_at
+            elif event.description == 'Status changed to dropoff':
+                dropoff_time = event.created_at
+
+        if pickup_time and dropoff_time:
+            duration = dropoff_time - pickup_time
+            return duration.total_seconds()
         return None
