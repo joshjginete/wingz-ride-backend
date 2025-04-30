@@ -1,6 +1,7 @@
+from django.contrib.gis.db import models as gis_models
 from django.db import models
 
-from user.models import User
+from users.models import User
 
 optional = {
     'null': True,
@@ -11,11 +12,13 @@ optional = {
 class Rides(models.Model):
     RIDE_STATUS_DROPOFF = "dropoff"
     RIDE_STATUS_EN_ROUTE = "enroute"
+    RIDE_STATUS_PENDING = "pending"
     RIDE_STATUS_PICKUP = "pickup"
 
     RIDE_STATUSES = (
         (RIDE_STATUS_DROPOFF, "Dropoff"),
         (RIDE_STATUS_EN_ROUTE, "En Route"),
+        (RIDE_STATUS_PENDING, "Pending"),
         (RIDE_STATUS_PICKUP, "Pickup"),
     )
 
@@ -33,12 +36,14 @@ class Rides(models.Model):
     dropoff_longitude = models.FloatField(**optional)
     pickup_latitude = models.FloatField(**optional)
     pickup_longitude = models.FloatField(**optional)
-    pickup_time = models.DateTimeField(**optional)
+    pickup_time = models.DateTimeField(auto_now_add=True, **optional)
     status = models.CharField(
         max_length=16,
         choices=RIDE_STATUSES,
-        default=RIDE_STATUS_PICKUP
+        default=RIDE_STATUS_PENDING
     )
+    pickup_location = gis_models.PointField(**optional)
+    dropoff_location = gis_models.PointField(**optional)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -47,7 +52,7 @@ class Rides(models.Model):
         verbose_name_plural = "Rides"
 
     def __str__(self):
-        return str(self.id)
+        return f"Ride {self.id} from {self.pickup_location} to {self.dropoff_location}"
 
 
 class RideEvents(models.Model):
@@ -66,5 +71,3 @@ class RideEvents(models.Model):
 
     def __str__(self):
         return str(self.id)
-
-
