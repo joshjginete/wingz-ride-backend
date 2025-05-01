@@ -1,5 +1,5 @@
 # Wingz Ride Backend
-Payment Gateway integrating multiple methods.
+We are a rideshare platform focused on Non-Emergency Medical Transportation (NEMT). Our network of compassionate, credentialed drivers help vulnerable populations gain access to the care they need.
 
 ## Prerequisites
 - Python 3.13.2
